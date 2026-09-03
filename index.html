@@ -2,8 +2,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="google-site-verification" content="iDQvN-kILZwVELT5cKPrkmw6QI4_T5Iplx2R8DO2a2w" />
-<meta name="naver-site-verification" content="3ecb77f3497282b611c91c26d3a6f3f9767a6007" />  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>월하당 月下堂 | 종합 사주풀이</title>
@@ -399,7 +397,8 @@
     <div class="admin-field"><label>푸터 상호명</label><input type="text" id="edit_footerName"></div>
     <div class="admin-field"><label>푸터 안내문구</label><textarea id="edit_footerDisc" rows="2"></textarea></div>
 
-    <p class="admin-saved-msg" id="adminSavedMsg" style="display:none;">저장되었습니다</p>
+    <p class="admin-saved-msg" id="adminSavedMsg" style="display:none;">저장되었습니다 — 모든 방문자에게 반영됩니다</p>
+    <p class="admin-error" id="adminSaveError" style="display:none;">저장에 실패했습니다. 잠시 후 다시 시도해주세요 (Firestore 접근 권한을 확인해주세요)</p>
     <div class="admin-modal-btns">
       <button type="button" id="adminEditReset" class="admin-btn-ghost">기본값으로</button>
       <button type="button" id="adminEditClose" class="admin-btn-ghost">닫기</button>
@@ -1017,12 +1016,29 @@ document.getElementById('sajuForm').addEventListener('submit', function(e){
     btn.disabled = false; btn.textContent = '지금 바로 풀어보기';
   }, 700);
 });
+</script>
 
+<script type="module">
 /* =========================================================
-   관리자 모드 — 홈페이지 문구 / 카카오 링크 편집
+   관리자 모드 — Firestore 기반 홈페이지 문구 / 카카오 링크 편집
+   (수정하면 모든 방문자에게 동일하게 보입니다)
    ========================================================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD-b6jrHvk70A2sSpP7OV4dZHmQ0d7n7SY",
+  authDomain: "saju3-ed68a.firebaseapp.com",
+  projectId: "saju3-ed68a",
+  storageBucket: "saju3-ed68a.firebasestorage.app",
+  messagingSenderId: "1008914133278",
+  appId: "1:1008914133278:web:190b33e2d1d1546a5c590f"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const siteTextRef = doc(db, "settings", "siteText");
+
 const ADMIN_PW = 'gmd0000';
-const ADMIN_STORAGE_KEY = 'wolhadang_admin_text';
 
 const DEFAULT_SITE_TEXT = {
   brandName: '월하당',
@@ -1043,16 +1059,17 @@ function nl2br(text){
     return div.innerHTML;
   }).join('<br>');
 }
-function br2nl(html){
-  return html.replace(/<br\s*\/?>/gi, '\n').trim();
-}
-function loadSiteText(){
-  let saved = {};
+async function loadSiteText(){
   try{
-    const raw = localStorage.getItem(ADMIN_STORAGE_KEY);
-    if(raw) saved = JSON.parse(raw);
-  }catch(err){ saved = {}; }
-  return Object.assign({}, DEFAULT_SITE_TEXT, saved);
+    const snap = await getDoc(siteTextRef);
+    if(snap.exists()){
+      return Object.assign({}, DEFAULT_SITE_TEXT, snap.data());
+    }
+  }catch(err){ console.error('Firestore 읽기 실패:', err); }
+  return DEFAULT_SITE_TEXT;
+}
+async function saveSiteText(t){
+  await setDoc(siteTextRef, t);
 }
 function applySiteText(t){
   document.getElementById('brandNameText').textContent = t.brandName;
@@ -1065,7 +1082,12 @@ function applySiteText(t){
   document.getElementById('footerNameText').textContent = t.footerName;
   document.getElementById('footerDiscText').innerHTML = nl2br(t.footerDisc);
 }
-applySiteText(loadSiteText());
+
+let currentSiteText = DEFAULT_SITE_TEXT;
+(async function init(){
+  currentSiteText = await loadSiteText();
+  applySiteText(currentSiteText);
+})();
 
 const adminPwOverlay = document.getElementById('adminPwOverlay');
 const adminEditOverlay = document.getElementById('adminEditOverlay');
@@ -1091,8 +1113,9 @@ document.getElementById('adminPwInput').addEventListener('keydown', function(e){
   if(e.key === 'Enter'){ document.getElementById('adminPwSubmit').click(); }
 });
 
-function openAdminEditPanel(){
-  const t = loadSiteText();
+async function openAdminEditPanel(){
+  const t = await loadSiteText();
+  currentSiteText = t;
   document.getElementById('edit_brandName').value = t.brandName;
   document.getElementById('edit_heroTitle').value = t.heroTitle;
   document.getElementById('edit_heroLede').value = t.heroLede;
@@ -1103,19 +1126,21 @@ function openAdminEditPanel(){
   document.getElementById('edit_footerName').value = t.footerName;
   document.getElementById('edit_footerDisc').value = t.footerDisc;
   document.getElementById('adminSavedMsg').style.display = 'none';
+  document.getElementById('adminSaveError').style.display = 'none';
   adminEditOverlay.style.display = 'flex';
 }
 document.getElementById('adminEditClose').addEventListener('click', function(){
   adminEditOverlay.style.display = 'none';
 });
-document.getElementById('adminEditReset').addEventListener('click', function(){
-  if(confirm('모든 문구를 기본값으로 되돌릴까요? 저장된 수정 내용이 사라집니다.')){
-    localStorage.removeItem(ADMIN_STORAGE_KEY);
+document.getElementById('adminEditReset').addEventListener('click', async function(){
+  if(confirm('모든 방문자에게 보이는 문구를 기본값으로 되돌릴까요?')){
+    await saveSiteText(DEFAULT_SITE_TEXT);
+    currentSiteText = DEFAULT_SITE_TEXT;
     applySiteText(DEFAULT_SITE_TEXT);
     openAdminEditPanel();
   }
 });
-document.getElementById('adminEditSave').addEventListener('click', function(){
+document.getElementById('adminEditSave').addEventListener('click', async function(){
   const t = {
     brandName: document.getElementById('edit_brandName').value.trim() || DEFAULT_SITE_TEXT.brandName,
     heroTitle: document.getElementById('edit_heroTitle').value.trim() || DEFAULT_SITE_TEXT.heroTitle,
@@ -1127,11 +1152,19 @@ document.getElementById('adminEditSave').addEventListener('click', function(){
     footerName: document.getElementById('edit_footerName').value.trim() || DEFAULT_SITE_TEXT.footerName,
     footerDisc: document.getElementById('edit_footerDisc').value.trim() || DEFAULT_SITE_TEXT.footerDisc
   };
+  const saveBtn = document.getElementById('adminEditSave');
+  saveBtn.disabled = true; saveBtn.textContent = '저장 중…';
   try{
-    localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(t));
-  }catch(err){}
-  applySiteText(t);
-  document.getElementById('adminSavedMsg').style.display = 'block';
+    await saveSiteText(t);
+    currentSiteText = t;
+    applySiteText(t);
+    document.getElementById('adminSavedMsg').style.display = 'block';
+    document.getElementById('adminSaveError').style.display = 'none';
+  }catch(err){
+    console.error('Firestore 저장 실패:', err);
+    document.getElementById('adminSaveError').style.display = 'block';
+  }
+  saveBtn.disabled = false; saveBtn.textContent = '전체 저장';
 });
 </script>
 </body>
