@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>명운당 - 사주 운세</title>
+<style>
+  :root{
+    font-size: 16px;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    padding: 40px 20px 60px;
+    background:#f4f2ee;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    color:#1a1a1a;
+  }
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .hero{
+    background:#fff;
+    border-radius: 28px;
+    padding: 44px 40px;
+    text-align:center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    margin-bottom: 32px;
+  }
+  .badge{
+    display:inline-block;
+    background:#5a3fd6;
+    color:#fff;
+    text-decoration:none;
+    font-size: 1.15rem;
+    font-weight:700;
+    padding: 14px 30px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 0 rgba(90,63,214,.6);
+    animation: badgeBlink 1.6s ease-in-out infinite;
+  }
+  .badge:focus-visible{
+    outline: 3px solid #5a3fd6;
+    outline-offset: 3px;
+  }
+  @keyframes badgeBlink{
+    0%   { box-shadow: 0 0 0 0 rgba(90,63,214,.55); }
+    70%  { box-shadow: 0 0 0 14px rgba(90,63,214,0); }
+    100% { box-shadow: 0 0 0 0 rgba(90,63,214,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .badge{ animation: none; }
+  }
+  .hero h1{
+    font-size: 2.1rem;
+    line-height:1.4;
+    font-weight:800;
+    margin:0;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+  }
+  @media (max-width: 860px){
+    .grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px){
+    .grid{ grid-template-columns: 1fr; }
+    .hero{ padding: 32px 24px; }
+    .hero h1{ font-size: 1.6rem; }
+  }
+  .card{
+    display:block;
+    text-decoration:none;
+    border-radius: 24px;
+    padding: 40px 36px 36px;
+    min-height: 220px;
+    color:#fff;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover, .card:focus-visible{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  }
+  .card:focus-visible{
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+  .card .emoji{
+    font-size: 2.9rem;
+    display:block;
+    margin-bottom: 18px;
+  }
+  .card .label{
+    font-size: 1.15rem;
+    opacity:.9;
+    margin-bottom: 8px;
+  }
+  .card .title{
+    font-size: 1.9rem;
+    font-weight:800;
+    margin-bottom: 14px;
+  }
+  .card .desc{
+    font-size: 1.05rem;
+    opacity:.9;
+    line-height:1.5;
+  }
+  .c1{ background:#c73866; }
+  .c2{ background:#6c4fd6; }
+  .c3{ background:#c8930f; }
+  .c4{ background:#2f4aa8; }
+  .c5{ background:#15945f; }
+  .c6{ background:#9c1a26; }
+  .c7{ background:#c0501c; }
+  .c8{ background:#0f7a5c; }
+  .c9{ background:#1596ae; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <a class="badge" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">사주 운세</a>
+    <h1>오늘 내 운세, 지금 바로 확인하세요</h1>
+  </div>
+
+  <div class="grid">
+    <a class="card c1" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">💔</span>
+      <div class="label">다시 만날 수 있을까</div>
+      <div class="title">재회운</div>
+      <div class="desc">헤어진 인연, 재회 가능성 확인</div>
+    </a>
+    <a class="card c2" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">💕</span>
+      <div class="label">지금 이 사람과는</div>
+      <div class="title">애정운</div>
+      <div class="desc">연애 흐름과 상대방 마음 확인</div>
+    </a>
+    <a class="card c3" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">💰</span>
+      <div class="label">돈이 들어오는 시기</div>
+      <div class="title">재물운</div>
+      <div class="desc">금전운, 재물복 흐름 확인</div>
+    </a>
+    <a class="card c4" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">💼</span>
+      <div class="label">합격, 이직 타이밍</div>
+      <div class="title">취업운</div>
+      <div class="desc">취업, 이직 성공 가능성 확인</div>
+    </a>
+    <a class="card c5" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">🍀</span>
+      <div class="label">몸과 마음의 균형</div>
+      <div class="title">건강운</div>
+      <div class="desc">올해 건강 주의할 점 확인</div>
+    </a>
+    <a class="card c6" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">💑</span>
+      <div class="label">두 사람의 인연</div>
+      <div class="title">궁합</div>
+      <div class="desc">생년월일로 보는 궁합 분석</div>
+    </a>
+    <a class="card c7" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">🎊</span>
+      <div class="label">새해 첫 운세</div>
+      <div class="title">신년운세</div>
+      <div class="desc">올 한 해 전체 흐름 확인</div>
+    </a>
+    <a class="card c8" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">🚚</span>
+      <div class="label">움직임이 필요한 때</div>
+      <div class="title">이사·이직운</div>
+      <div class="desc">이사, 이직에 좋은 시기 확인</div>
+    </a>
+    <a class="card c9" href="https://yeonbit.netlify.app/" target="_blank" rel="noopener">
+      <span class="emoji">📖</span>
+      <div class="label">합격과 성적의 흐름</div>
+      <div class="title">학업운</div>
+      <div class="desc">시험, 합격운 확인</div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
