@@ -1019,7 +1019,7 @@ document.getElementById('sajuForm').addEventListener('submit', function(e){
 /* =========================================================
    관리자 모드 — 홈페이지 문구 / 카카오 링크 편집
    ========================================================= */
-const ADMIN_PW = 'gmd000';
+const ADMIN_PW = 'gmd0000';
 const ADMIN_STORAGE_KEY = 'wolhadang_admin_text';
 
 const DEFAULT_SITE_TEXT = {
@@ -1130,9 +1130,6 @@ document.getElementById('adminEditSave').addEventListener('click', function(){
   }catch(err){}
   applySiteText(t);
   document.getElementById('adminSavedMsg').style.display = 'block';
-});
-[adminPwOverlay, adminEditOverlay].forEach(function(ov){
-  ov.addEventListener('click', function(e){ if(e.target === ov) ov.style.display='none'; });
 });
 </script>
 </body>
