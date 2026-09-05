@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar@0.4.0/dist/korean-lunar-calendar.min.js"></script>
 <style>
   :root{
     --void:#14112a;
@@ -119,6 +121,25 @@
   .radio-group label{flex:1;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);padding:14px 10px;border-radius:2px;color:var(--ink-dim);font-size:16px;white-space:nowrap;cursor:pointer;transition:border-color .15s,color .15s,background .15s;}
   .radio-group input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;}
   .radio-group label:has(input:checked){border-color:var(--brass);color:var(--ink);background:var(--brass-soft);}
+  .calendar-type{display:flex;gap:10px;margin-bottom:12px;}
+  .calendar-type label{flex:1;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);padding:12px 10px;border-radius:2px;color:var(--ink-dim);font-size:15.5px;cursor:pointer;transition:border-color .15s,color .15s,background .15s;}
+  .calendar-type input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;}
+  .calendar-type label:has(input:checked){border-color:var(--brass);color:var(--ink);background:var(--brass-soft);}
+  .leap-month{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:13.5px;color:var(--ink-faint);}
+  .leap-month input{accent-color:var(--brass);}
+  .daily-fortune{margin-top:44px;padding:30px 28px;border:1px solid var(--border);background:rgba(193,153,106,.055);position:relative;}
+  .daily-fortune::before{content:'今日運勢';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--void);padding:0 14px;color:var(--brass);font-family:'Noto Serif KR',serif;font-size:15px;letter-spacing:.08em;}
+  .daily-fortune h3{font-size:21px;text-align:center;margin-bottom:7px;}
+  .daily-date{text-align:center;color:var(--ink-faint);font-size:13.5px;margin-bottom:20px;}
+  .fortune-score{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .fortune-score .bar{flex:1;height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+  .fortune-score .bar>div{height:100%;background:linear-gradient(90deg,var(--rose),var(--brass));}
+  .fortune-score strong{font-family:'Noto Serif KR',serif;color:var(--brass);font-size:20px;min-width:48px;text-align:right;}
+  .fortune-body{color:var(--ink-dim);font-size:18px;line-height:1.95;text-align:justify;text-justify:inter-character;}
+  .fortune-meta{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px;}
+  .fortune-meta span{border:1px solid var(--border);padding:5px 11px;border-radius:18px;font-size:13px;color:var(--ink-faint);}
+  .fortune-fixed{text-align:center;margin-top:14px;font-size:12.5px;color:var(--ink-faint);}
+
   .time-unknown{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14.5px;color:var(--ink-faint);}
   .time-unknown input{accent-color:var(--brass);}
   .submit-btn{width:100%;margin-top:8px;padding:16px;border:1px solid var(--brass);border-radius:2px;background:linear-gradient(180deg, rgba(193,153,106,.18), rgba(193,153,106,.05));color:var(--ink);font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:.08em;cursor:pointer;}
@@ -142,7 +163,7 @@
 
   .overview{margin-top:32px;padding:30px 28px;border-left:2px solid var(--brass);background:rgba(193,153,106,.05);}
   .overview .oneliner{font-family:'Noto Serif KR',serif;font-weight:600;font-size:23.5px;color:var(--ink);margin-bottom:18px;text-align:center;}
-  .overview .body{color:var(--ink-dim);font-size:18.5px;line-height:1.95;text-align:left;}
+  .overview .body{color:var(--ink-dim);font-size:18.5px;line-height:1.95;text-align:justify;text-justify:inter-character;}
   .overview .body p{margin-bottom:14px;}
   .overview .body p:last-child{margin-bottom:0;}
 
@@ -150,7 +171,7 @@
   .radar-block h3{font-size:20px;margin-bottom:20px;color:var(--ink);}
   .el-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px;}
   .el-tag{font-size:15px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);color:var(--ink-dim);}
-  .el-note{margin-top:20px;padding:20px 22px;background:rgba(10,8,24,.35);border:1px solid var(--border);text-align:left;color:var(--ink-dim);font-size:18px;line-height:1.9;}
+  .el-note{margin-top:20px;padding:20px 22px;background:rgba(10,8,24,.35);border:1px solid var(--border);text-align:justify;text-justify:inter-character;color:var(--ink-dim);font-size:18px;line-height:1.9;}
   .el-note .tag{display:inline-block;font-size:13.5px;color:var(--brass);letter-spacing:.05em;margin-bottom:10px;}
 
   details.acc{margin-top:16px;border:1px solid var(--border);background:var(--panel-soft);}
@@ -239,13 +260,21 @@
             </div>
           </div>
           <div class="field">
-            <label>생년월일 (양력)</label>
+            <label>생년월일</label>
+            <div class="calendar-type">
+              <label><input type="radio" name="calendarType" value="solar" checked><span>양력</span></label>
+              <label><input type="radio" name="calendarType" value="lunar"><span>음력</span></label>
+            </div>
             <div class="date-field-wrap">
               <div class="date-input-row">
                 <input type="number" id="byear" placeholder="년" min="1930" max="2026" inputmode="numeric">
                 <input type="number" id="bmonth" placeholder="월" min="1" max="12" inputmode="numeric">
                 <input type="number" id="bday" placeholder="일" min="1" max="31" inputmode="numeric">
                 <button type="button" id="calToggle" class="cal-toggle" aria-label="달력 열기">🗓</button>
+              </div>
+              <div class="leap-month" id="leapMonthWrap" style="display:none;">
+                <input type="checkbox" id="isLeapMonth">
+                <label for="isLeapMonth">윤달</label>
               </div>
               <div class="cal-popup" id="calPopup" style="display:none;">
                 <div class="cal-header">
@@ -289,6 +318,18 @@
       <div class="overview">
         <div class="oneliner" id="overviewOneliner"></div>
         <div class="body" id="overviewBody"></div>
+      </div>
+
+      <div class="daily-fortune" id="dailyFortune">
+        <h3>오늘의 운세</h3>
+        <div class="daily-date" id="dailyFortuneDate"></div>
+        <div class="fortune-score">
+          <div class="bar"><div id="dailyFortuneBar" style="width:0%"></div></div>
+          <strong id="dailyFortuneScore">0점</strong>
+        </div>
+        <div class="fortune-body" id="dailyFortuneText"></div>
+        <div class="fortune-meta" id="dailyFortuneMeta"></div>
+        <div class="fortune-fixed">오늘 하루 24시간 동일한 결과로 유지됩니다. 날짜가 바뀌면 다음 운세로 갱신됩니다.</div>
       </div>
 
       <div class="radar-block">
@@ -819,8 +860,114 @@ function buildLineSVG(points){
 }
 
 /* =========================================================
-   렌더링
+   오늘의 운세 — 48개 고정 패턴
+   사주 원국 + 오늘의 일진 + 날짜를 조합해 하루 24시간 같은 결과를 만듭니다.
    ========================================================= */
+const DAILY_FORTUNE_PATTERNS = [
+  ["기회포착","오늘은 작은 제안이나 우연한 연락 속에 기회가 숨어 있습니다. 특히 당신의 %ELEMENT% 기운이 강하게 작용하므로, 평소라면 넘겼을 사소한 신호도 한 번 더 살펴보세요.",72],
+  ["관계정리","오늘은 사람을 많이 늘리기보다 이미 이어진 관계를 정돈하는 것이 좋습니다. %GROUP% 기운을 가진 당신에게는 애매한 약속 하나를 분명하게 정리하는 것만으로도 흐름이 한결 가벼워집니다.",68],
+  ["실속운","화려한 선택보다 실제로 남는 것을 고르는 날입니다. 당신의 %ELEMENT% 기운을 살려 지출·일정·업무를 한 번 정리하면 생각보다 빠르게 실속이 생깁니다.",76],
+  ["표현운","오늘은 속으로만 판단하지 말고 필요한 말을 짧게 꺼내는 것이 유리합니다. %DAYSTEM% 기질이 강한 당신에게는 솔직하되 부드러운 표현이 좋은 결과를 만듭니다.",81],
+  ["집중운","여러 일을 동시에 벌이기보다 가장 중요한 한 가지를 끝내는 쪽이 좋습니다. 오늘의 %TODAYGANJI% 기운과 당신의 %ELEMENT% 성향이 만나 집중력이 살아나는 흐름입니다.",84],
+  ["금전주의","돈과 관련해서는 빠른 결정에 한 번 더 브레이크를 거세요. 특히 %WEAKELEMENT% 기운이 약한 사주라면 순간적인 충동보다 하루 정도 생각하는 편이 안전합니다.",57],
+  ["재물확장","이미 하고 있는 일에서 수입을 넓힐 방법을 찾기 좋은 날입니다. 새로운 판을 무리하게 벌이기보다 당신에게 익숙한 %GROUP% 영역에서 작은 확장을 시도해보세요.",78],
+  ["일의속도","오늘은 시작보다 마무리가 복입니다. 미뤄둔 일 하나를 끝내면 다른 일까지 자연스럽게 속도가 붙습니다. %DAYSTEM% 기질의 추진력을 한 곳에 모아보세요.",83],
+  ["귀인운","혼자 해결하려 하지 말고 필요한 사람에게 먼저 물어보세요. 오늘은 주변의 조언 하나가 시간을 크게 줄여줄 수 있는 흐름이며, 특히 실무적인 도움을 받기 좋습니다.",79],
+  ["문서운","계약·예약·신청·메시지처럼 기록으로 남는 일을 꼼꼼히 확인하세요. 작은 오탈자 하나를 잡는 것이 이후의 번거로움을 막아주는 날입니다.",74],
+  ["연락운","뜸했던 사람에게 가볍게 안부를 건네기 좋습니다. 무거운 이야기보다 자연스러운 한마디가 관계의 온도를 다시 올리는 데 더 효과적입니다.",77],
+  ["애정운","오늘의 애정운은 밀어붙이는 힘보다 상대의 반응을 읽는 감각에 있습니다. 당신의 %ELEMENT% 기운을 앞세우기보다 한 박자 여유를 두면 관계가 편안해집니다.",75],
+  ["재회운","과거의 인연이 떠오르기 쉬운 날입니다. 다만 바로 결론을 내리기보다 상대와 나의 현재 상황이 달라졌는지부터 살펴보는 것이 좋습니다.",69],
+  ["감정관리","오늘은 감정이 올라오는 순간 바로 답하지 않는 것이 복입니다. 특히 %ELEMENT% 기운이 강한 당신은 잠시 시간을 두면 훨씬 정확한 판단을 할 수 있습니다.",61],
+  ["자기확신","남의 속도와 비교하지 마세요. 오늘은 당신이 이미 쌓아온 것이 힘을 발휘하는 날이며, 작은 진전이라도 스스로 인정해주는 것이 다음 행동의 힘이 됩니다.",86],
+  ["결단운","계속 미루던 선택 하나를 오늘은 정리해도 좋습니다. 완벽한 확신을 기다리기보다 현재 가진 정보 안에서 가장 현실적인 답을 고르는 것이 유리합니다.",80],
+  ["창의운","새로운 아이디어가 평소보다 쉽게 연결되는 날입니다. 메모만 해두지 말고 눈앞에서 바로 작은 결과물로 만들어보세요. 당신의 %GROUP% 기운이 표현될수록 운이 살아납니다.",88],
+  ["공부운","배우거나 익히는 일에 좋은 흐름입니다. 오늘 알게 된 내용 하나를 직접 적용해보면 기억에 오래 남고, 앞으로의 실력으로 연결되기 쉽습니다.",82],
+  ["직업운","일에서는 존재감을 과하게 드러내기보다 결과로 보여주는 편이 좋습니다. 조용히 완성도를 높이면 주변에서 먼저 당신의 실력을 알아보는 흐름입니다.",84],
+  ["평판운","오늘은 말 한마디가 평소보다 오래 남을 수 있습니다. 필요한 말은 분명하게, 불필요한 평가는 줄이는 것이 당신에게 가장 유리합니다.",65],
+  ["협업운","혼자 잘하는 것보다 역할을 명확히 나누는 것이 성과를 키웁니다. %GROUP% 기운이 강한 당신일수록 상대에게 맡길 부분을 믿고 넘겨보세요.",78],
+  ["휴식운","오늘의 운을 높이는 가장 쉬운 방법은 잠깐 멈추는 것입니다. 지친 상태에서 억지로 밀어붙이기보다 짧은 산책이나 조용한 시간을 가지면 판단력이 회복됩니다.",73],
+  ["건강리듬","생활 리듬을 일정하게 유지하는 것이 중요한 날입니다. 무리한 변화보다 식사·수면·움직임 중 하나만 규칙적으로 맞춰도 몸의 컨디션이 안정됩니다.",71],
+  ["집중환경","주변을 정리하면 생각도 정리됩니다. 책상이나 휴대전화 알림처럼 눈앞의 작은 방해 요소 하나를 줄이는 것이 오늘의 집중운을 높여줍니다.",79],
+  ["소비운","오늘은 사고 싶은 것과 꼭 필요한 것을 구분하는 감각이 중요합니다. 결제 전 10분만 미뤄도 불필요한 지출 하나를 피할 가능성이 큽니다.",59],
+  ["투자주의","수익을 크게 만들려는 마음보다 손실을 줄이는 감각이 필요한 날입니다. 확신이 부족한 투자나 계약은 오늘 당장 결정하지 않아도 됩니다.",54],
+  ["사업운","새로운 고객이나 아이디어를 찾기보다 기존 고객과 기존 자원을 다시 보는 것이 효율적입니다. 이미 가진 것을 재배치하면 뜻밖의 수익 포인트가 보일 수 있습니다.",81],
+  ["가족운","가까운 사람에게 무심코 던진 말이 생각보다 크게 전달될 수 있습니다. 오늘은 맞는 말을 하는 것보다 따뜻하게 말하는 것이 관계운을 살립니다.",70],
+  ["친구운","오랜 친구와의 짧은 대화가 마음을 환기해주는 날입니다. 문제 해결을 부탁하기보다 편하게 이야기하는 것만으로도 새로운 관점이 생길 수 있습니다.",76],
+  ["대인운","오늘은 첫인상보다 꾸준한 태도가 더 크게 평가됩니다. 약속 시간을 지키고 작은 배려를 보여주는 것이 당신의 신뢰도를 높여줍니다.",82],
+  ["말실수주의","오늘은 설명을 길게 할수록 오해가 생길 수 있습니다. 핵심만 짧고 정확하게 전달하면 오히려 당신의 진심이 더 잘 전해집니다.",58],
+  ["새로운시작","작게 시작하기 좋은 날입니다. 큰 계획을 완성하려 하지 말고 첫 단계만 실행하세요. 오늘의 작은 움직임이 며칠 뒤 생각보다 큰 차이를 만듭니다.",85],
+  ["마무리운","새로운 일을 추가하기 전에 미완성된 일을 하나 끝내세요. 정리되지 않은 일이 줄어들수록 다음 기회가 들어올 공간이 생깁니다.",87],
+  ["문제해결","오늘은 복잡한 문제를 감정이 아니라 순서로 풀어야 합니다. 해야 할 일 세 가지만 적고 첫 번째부터 처리하면 막혀 있던 흐름이 풀립니다.",80],
+  ["기다림운","오늘은 억지로 결과를 당겨오기보다 타이밍을 기다리는 편이 낫습니다. 상대의 답이나 외부 상황이 필요한 일은 한 번 더 여유를 주세요.",63],
+  ["속도조절","모든 일을 빨리 처리하려 하지 마세요. 오늘은 빠른 것보다 정확한 것이 이득이며, 한 번의 실수를 줄이는 것이 결국 시간을 절약합니다.",67],
+  ["선택운","두 가지 중 하나를 골라야 한다면 더 오래 유지할 수 있는 쪽을 선택하세요. 순간적인 설렘보다 지속 가능성이 오늘의 운과 잘 맞습니다.",78],
+  ["정리정돈","버릴 것과 남길 것을 구분하기 좋은 날입니다. 물건뿐 아니라 일정과 인간관계에서도 불필요한 부담 하나를 내려놓으면 마음이 가벼워집니다.",74],
+  ["감사운","이미 가지고 있는 것에 시선을 돌리면 운의 흐름이 좋아집니다. 오늘 도움받은 일이 있다면 짧게라도 고마움을 표현해보세요.",83],
+  ["자존감","오늘은 스스로를 낮춰야 관계가 좋아지는 날이 아닙니다. 예의는 지키되 당신의 기준과 가치를 분명히 하는 것이 오히려 좋은 인상을 남깁니다.",85],
+  ["감각운","평소 지나치던 디테일에서 답을 찾기 쉽습니다. 색상·숫자·문장처럼 작은 단서가 중요한 아이디어로 연결될 수 있으니 떠오른 생각은 바로 기록하세요.",77],
+  ["변화운","익숙한 방법 하나를 조금 다르게 바꿔보세요. 큰 변화가 아니어도 접근 방식을 바꾸면 막혔던 일이 의외로 쉽게 풀릴 수 있습니다.",81],
+  ["회복운","최근 지쳤다면 오늘은 성과보다 회복을 우선해도 괜찮습니다. 쉬는 시간을 죄책감 없이 확보하는 것이 오히려 내일의 생산성을 높입니다.",72],
+  ["장기운","오늘의 성과보다 한 달 뒤의 결과를 생각하세요. 지금 조금 느리더라도 오래 갈 수 있는 선택을 하면 당신의 사주 흐름과 더 잘 맞습니다.",86],
+  ["직감운","첫 느낌을 무조건 따르라는 뜻은 아니지만, 이상하게 마음에 걸리는 부분은 그냥 넘기지 마세요. 확인 한 번이 중요한 실수를 막아줄 수 있습니다.",73],
+  ["균형운","일과 사람, 돈과 휴식 중 한쪽으로 너무 기울지 않도록 균형을 잡아주세요. 오늘은 어느 하나를 극단적으로 밀어붙이지 않는 것이 오히려 길합니다.",78]
+];
+
+function hashText(text){
+  let h=2166136261;
+  for(let i=0;i<text.length;i++){ h^=text.charCodeAt(i); h=Math.imul(h,16777619); }
+  return h>>>0;
+}
+function getKSTDateKey(){
+  const parts = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const get=(t)=>parts.find(p=>p.type===t).value;
+  return `${get('year')}-${get('month')}-${get('day')}`;
+}
+function getTodayGanZhi(){
+  const [y,m,d]=getKSTDateKey().split('-').map(Number);
+  const idx=getDayGanZhiIndex(y,m,d);
+  return STEMS[idx%10]+BRANCHES[idx%12];
+}
+function renderDailyFortune(pillars, name, count, maxGroupKey){
+  const dateKey=getKSTDateKey();
+  const todayGanJi=getTodayGanZhi();
+  const maxIdx=count.indexOf(Math.max(...count));
+  const minIdx=count.indexOf(Math.min(...count));
+  const seedKey=[
+    dateKey,
+    pillars.year.stemIdx,pillars.year.branchIdx,
+    pillars.month.stemIdx,pillars.month.branchIdx,
+    pillars.day.stemIdx,pillars.day.branchIdx,
+    pillars.hour ? pillars.hour.stemIdx : 'x',
+    pillars.hour ? pillars.hour.branchIdx : 'x'
+  ].join('|');
+  const idx=hashText(seedKey)%DAILY_FORTUNE_PATTERNS.length;
+  const pattern=DAILY_FORTUNE_PATTERNS[idx];
+  const groupName=maxGroupKey;
+  const replacements={
+    '%ELEMENT%':EL_NAME[maxIdx]+'('+EL_HANJA[maxIdx]+')',
+    '%WEAKELEMENT%':EL_NAME[minIdx]+'('+EL_HANJA[minIdx]+')',
+    '%GROUP%':groupName,
+    '%DAYSTEM%':DAY_STEM_TEXT[pillars.day.stemIdx][0],
+    '%TODAYGANJI%':todayGanJi
+  };
+  let body=pattern[1];
+  Object.keys(replacements).forEach(k=>body=body.split(k).join(replacements[k]));
+  const scoreBase=pattern[2];
+  const todayIdx=getDayGanZhiIndex(...dateKey.split('-').map(Number));
+  const relation=(todayIdx%10===pillars.day.stemIdx ? 5 : 0) + (todayIdx%12===pillars.day.branchIdx ? 4 : 0);
+  const score=Math.max(45,Math.min(95,scoreBase+relation));
+  const scoreEl=document.getElementById('dailyFortuneScore');
+  document.getElementById('dailyFortuneDate').textContent=`${dateKey.replaceAll('-','.')} · 오늘의 일진 ${todayGanJi} · ${name ? name+'님의 사주 기준' : '입력한 사주 기준'}`;
+  document.getElementById('dailyFortuneText').textContent=body;
+  document.getElementById('dailyFortuneBar').style.width=score+'%';
+  scoreEl.textContent=score+'점';
+  document.getElementById('dailyFortuneMeta').innerHTML=[
+    pattern[0],
+    '사주 오행 '+EL_NAME[maxIdx],
+    '십성 흐름 '+groupName,
+    '24시간 고정'
+  ].map(t=>`<span>${t}</span>`).join('');
+}
 function renderResult(pillars, name, genderIsF){
   const grid = document.getElementById('sajuGrid');
   const order = [
@@ -857,6 +1004,7 @@ function renderResult(pillars, name, genderIsF){
 
   let maxGroupKey='비겁', maxGroupVal=-1;
   Object.keys(groups).forEach(k=>{ if(groups[k]>maxGroupVal){maxGroupVal=groups[k]; maxGroupKey=k;} });
+  renderDailyFortune(pillars, name, count, maxGroupKey);
 
   document.getElementById('overviewOneliner').textContent = `${honorific}"${gy.oneliner}"`;
   document.getElementById('overviewBody').innerHTML =
@@ -938,6 +1086,19 @@ document.getElementById('timeUnknown').addEventListener('change', function(){
   ['ampm','hour12','minute'].forEach(id=>{ document.getElementById(id).disabled = off; });
 });
 
+(function setupCalendarType(){
+  const radios=document.querySelectorAll('input[name="calendarType"]');
+  const label=document.querySelector('.date-field-wrap').parentElement.querySelector('label');
+  const leapWrap=document.getElementById('leapMonthWrap');
+  function apply(){
+    const type=document.querySelector('input[name="calendarType"]:checked').value;
+    label.textContent='생년월일 ('+(type==='solar'?'양력':'음력')+')';
+    leapWrap.style.display=type==='lunar'?'flex':'none';
+  }
+  radios.forEach(r=>r.addEventListener('change',apply));
+  apply();
+})();
+
 (function setupCalendar(){
   const byear=document.getElementById('byear'), bmonth=document.getElementById('bmonth'), bday=document.getElementById('bday');
   const toggle=document.getElementById('calToggle'), popup=document.getElementById('calPopup');
@@ -993,10 +1154,23 @@ document.getElementById('sajuForm').addEventListener('submit', function(e){
   const mv = document.getElementById('bmonth').value;
   const dv = document.getElementById('bday').value;
   if(!yv || !mv || !dv){ errorMsg.textContent='생년월일(년·월·일)을 모두 입력해주세요'; errorMsg.style.display='block'; return; }
-  const y=parseInt(yv,10), m=parseInt(mv,10), d=parseInt(dv,10);
-  const maxDayForYM = (y>=1&&m>=1&&m<=12) ? new Date(y,m,0).getDate() : 31;
+  let y=parseInt(yv,10), m=parseInt(mv,10), d=parseInt(dv,10);
+  const calendarType=document.querySelector('input[name="calendarType"]:checked').value;
+  const maxDayForYM = (y>=1&&m>=1&&m<=12) ? (calendarType==='solar' ? new Date(y,m,0).getDate() : 30) : 31;
   if(y<1930||y>2026||m<1||m>12||d<1||d>maxDayForYM){
     errorMsg.textContent='생년월일을 올바르게 입력해주세요'; errorMsg.style.display='block'; return;
+  }
+  if(calendarType==='lunar'){
+    if(typeof KoreanLunarCalendar==='undefined'){
+      errorMsg.textContent='음력 변환 모듈을 불러오지 못했습니다. 인터넷 연결을 확인해주세요'; errorMsg.style.display='block'; return;
+    }
+    const lunar=new KoreanLunarCalendar();
+    const leap=document.getElementById('isLeapMonth').checked;
+    if(!lunar.setLunarDate(y,m,d,leap)){
+      errorMsg.textContent='존재하지 않는 음력 날짜이거나 윤달 설정이 올바르지 않습니다'; errorMsg.style.display='block'; return;
+    }
+    const solar=lunar.getSolarCalendar();
+    y=solar.year; m=solar.month; d=solar.day;
   }
   errorMsg.style.display='none';
   const timeUnknown = document.getElementById('timeUnknown').checked;
