@@ -138,7 +138,6 @@
   .fortune-body{color:var(--ink-dim);font-size:18px;line-height:1.95;text-align:justify;text-justify:inter-character;}
   .fortune-meta{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px;}
   .fortune-meta span{border:1px solid var(--border);padding:5px 11px;border-radius:18px;font-size:13px;color:var(--ink-faint);}
-  .fortune-fixed{text-align:center;margin-top:14px;font-size:12.5px;color:var(--ink-faint);}
 
   .time-unknown{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14.5px;color:var(--ink-faint);}
   .time-unknown input{accent-color:var(--brass);}
@@ -181,7 +180,7 @@
   details.acc summary .steaser{display:block;font-size:15.5px;color:var(--ink-faint);margin-top:5px;font-family:'Noto Sans KR',sans-serif;}
   details.acc summary .chev{font-size:20px;color:var(--brass);transition:transform .25s;flex-shrink:0;}
   details.acc[open] summary .chev{transform:rotate(45deg);}
-  details.acc .acc-body{padding:0 22px 28px;color:var(--ink-dim);font-size:18.5px;line-height:1.95;}
+  details.acc .acc-body{padding:0 22px 28px;color:var(--ink-dim);font-size:18.5px;line-height:1.95;text-align:justify;text-justify:inter-character;}
   details.acc .acc-body h4{font-size:17.5px;font-weight:600;color:var(--ink);margin:20px 0 9px;}
   details.acc .acc-body ul{margin:0;padding-left:18px;}
   details.acc .acc-body li{margin-bottom:6px;}
@@ -329,7 +328,6 @@
         </div>
         <div class="fortune-body" id="dailyFortuneText"></div>
         <div class="fortune-meta" id="dailyFortuneMeta"></div>
-        <div class="fortune-fixed">오늘 하루 24시간 동일한 결과로 유지됩니다. 날짜가 바뀌면 다음 운세로 갱신됩니다.</div>
       </div>
 
       <div class="radar-block">
@@ -964,8 +962,7 @@ function renderDailyFortune(pillars, name, count, maxGroupKey){
   document.getElementById('dailyFortuneMeta').innerHTML=[
     pattern[0],
     '사주 오행 '+EL_NAME[maxIdx],
-    '십성 흐름 '+groupName,
-    '24시간 고정'
+    '십성 흐름 '+groupName
   ].map(t=>`<span>${t}</span>`).join('');
 }
 function renderResult(pillars, name, genderIsF){
